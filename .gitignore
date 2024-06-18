@@ -1,4 +1,6 @@
 **/.terraform
 **/terraform.tfstate
+**/terraform.tfstate.backup
 **/.terraform.lock.hcl
 **/kubectl
+.aws_account

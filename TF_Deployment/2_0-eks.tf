@@ -37,4 +37,21 @@ module "eks" {
       capacity_type  = "SPOT"
     }
   }
+
+  access_entries = {
+    Main = {
+      kubernetes_groups = []
+      principal_arn     = var.eks_access_role
+
+      policy_associations = {
+        example = {
+          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSAdminPolicy"
+          access_scope = {
+            namespaces = ["default"]
+            type       = "namespace"
+          }
+        }
+      }
+    }
+  }
 }
