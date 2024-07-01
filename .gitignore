@@ -1,6 +1,11 @@
+# Terraform Files
 **/.terraform
 **/terraform.tfstate
 **/terraform.tfstate.backup
 **/.terraform.lock.hcl
+
+# Execution Binaries
 **/kubectl
+
+# AWS Account Credentials
 .aws_account
