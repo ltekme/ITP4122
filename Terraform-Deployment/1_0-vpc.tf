@@ -61,7 +61,7 @@ resource "aws_nat_gateway" "VTC_Service-private-AZ_A" {
   depends_on = [
     aws_subnet.VTC_Service-public-AZ_A,
     aws_internet_gateway.VTC-Service,
-    aws_eip.VTC-Service-EIP-NAT-AZ_A.id
+    aws_eip.VTC-Service-EIP-NAT-AZ_A
   ]
 
   tags = {
@@ -78,7 +78,7 @@ resource "aws_nat_gateway" "VTC_Service-private-AZ_B" {
   depends_on = [
     aws_subnet.VTC_Service-public-AZ_B,
     aws_internet_gateway.VTC-Service,
-    aws_eip.VTC-Service-EIP-NAT-AZ_B.id
+    aws_eip.VTC-Service-EIP-NAT-AZ_B
   ]
   tags = {
     Name = "${aws_vpc.VTC-Service.tags.Name}-NAT_GW-AZ_B"
