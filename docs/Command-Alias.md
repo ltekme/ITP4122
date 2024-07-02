@@ -6,6 +6,12 @@ List of useful alias commands
 
 1. [k=kubectl](#alias-k-for-kubectl)
 
+## Permanent Alias
+
+```sh
+echo 'alias k=kubectl' > ~/.bash_aliases
+```
+
 ## Alias 'k' for kubectl
 
 ```sh

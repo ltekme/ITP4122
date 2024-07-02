@@ -17,24 +17,18 @@ Access Entry:
         arn:aws:eks::aws:cluster-access-policy/AmazonEKSAdminPolicy
 
 ########################################################*/
-module "eks" {
+module "VTC-Service-EKS_Cluster" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.0"
 
-  cluster_name                   = "${var.project_name}-VTC_Service"
+  cluster_name                   = var.eks-cluster-name
   cluster_version                = "1.30"
   cluster_endpoint_public_access = true
 
   cluster_addons = {
-    coredns = {
-      most_recent = true
-    }
-    kube-proxy = {
-      most_recent = true
-    }
-    vpc-cni = {
-      most_recent = true
-    }
+    coredns    = {}
+    kube-proxy = {}
+    vpc-cni    = {}
   }
 
   vpc_id                   = aws_vpc.VTC-Service.id
@@ -66,19 +60,23 @@ module "eks" {
         eksadmin = {
           policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSAdminPolicy"
           access_scope = {
-            type       = "cluster"
+            type = "cluster"
           }
         }
         clusteradmin = {
           policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
           access_scope = {
-            type       = "cluster"
+            type = "cluster"
           }
         }
       }
     }
   }
-  
+
+  node_security_group_tags = {
+    "kubernetes.io/cluster/${var.eks-cluster-name}" = null
+  }
+
   depends_on = [
     aws_subnet.VTC_Service-private-AZ_A,
     aws_subnet.VTC_Service-private-AZ_B,

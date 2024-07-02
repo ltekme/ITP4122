@@ -11,6 +11,7 @@ resource "aws_vpc" "VTC-Service" {
 
   tags = {
     Name = "${var.project_name}-Service-VPC"
+    "kubernetes.io/cluster/${var.eks-cluster-name}" = "owned"
   }
 }
 
