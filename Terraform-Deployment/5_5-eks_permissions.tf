@@ -1,10 +1,16 @@
 /* #######################################################
 Main EKS Cluster Permissions
 
+Permissions:
+    elasticloadbalancing:DescribeLoadBalancers
+    ec2:DescribeSecurityGroups
+    ec2:DescribeInstances
+
+Required to create load balancers service for deployments
+
 ########################################################*/
-
-
 resource "aws_iam_policy" "VTC_Service-EKS-ELB-Permission" {
+  // EKS cluster permission
   name        = lower("${var.project_name}-VTC_Service-EKS-ELB-Permission")
   description = "Policy to allow EKS to describe ELB resources"
   policy      = jsonencode({

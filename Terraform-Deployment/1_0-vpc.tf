@@ -1,8 +1,9 @@
-##########################################################
-# Main VPC Block
-#
-# CIDR: 10.0.0.0/16
-##########################################################
+/* #######################################################
+Main VPC Block
+
+CIDR: 10.0.0.0/16
+
+########################################################*/
 resource "aws_vpc" "VTC-Service" {
   cidr_block = "10.0.0.0/16"
 
@@ -11,14 +12,14 @@ resource "aws_vpc" "VTC-Service" {
 
   tags = {
     Name = "${var.project_name}-Service-VPC"
-    "kubernetes.io/cluster/${var.eks-cluster-name}" = "owned"
   }
 }
 
 
-##########################################################
-# VPC Internet Access Gateway
-##########################################################
+/* #######################################################
+VPC Internet Access Gateway
+
+########################################################*/
 resource "aws_internet_gateway" "VTC-Service" {
   vpc_id = aws_vpc.VTC-Service.id
 
@@ -28,9 +29,10 @@ resource "aws_internet_gateway" "VTC-Service" {
 }
 
 
-##########################################################
-# Elastic IP for NAT Gateway
-##########################################################
+/* #######################################################
+Elastic IP for NAT Gateway
+
+########################################################*/
 resource "aws_eip" "VTC-Service-EIP-NAT-AZ_A" {
   // Avalability Zone A - NAT Gateway
   domain = "vpc"
@@ -50,9 +52,10 @@ resource "aws_eip" "VTC-Service-EIP-NAT-AZ_B" {
 }
 
 
-##########################################################
-# VPC NAT Gateway For Private Subnets
-##########################################################
+/* #######################################################
+VPC NAT Gateway For Private Subnets
+
+########################################################*/
 resource "aws_nat_gateway" "VTC_Service-private-AZ_A" {
   // Avalability Zone A - NAT Gateway
 

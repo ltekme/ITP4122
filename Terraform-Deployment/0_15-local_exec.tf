@@ -1,10 +1,14 @@
-##########################################################
-# Local Execute
-##########################################################
+/* #######################################################
+Local Execute
+
+Run after EKS cluster creation:
+    aws eks update-kubeconfig --region ${var.aws-region} --name ${module.VTC-Service-EKS_Cluster.cluster_name}
+
+########################################################*/
 resource "null_resource" "update_kubeconfig" {
   // Update Local Kubectl Config
   provisioner "local-exec" {
-    command = "aws eks update-kubeconfig --region ${var.aws-region} --name ${module.VTC-Service-EKS_Cluster.cluster_name} && echo 'Updated EKS Kubectl credentials'"
+    command = "aws eks update-kubeconfig --region ${var.aws-region} --name ${module.VTC-Service-EKS_Cluster.cluster_name}"
   }
   
   depends_on = [
