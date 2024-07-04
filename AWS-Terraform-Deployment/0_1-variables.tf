@@ -8,12 +8,6 @@ variable "project_name" {
   default     = "ITP4122"
 }
 
-variable "eks-cluster-name" {
-  description = "EKS Cluster Name for VTC_Service Cluster"
-  type        = string
-  default     = "ITP4122-VTC_Service"
-}
-
 variable "aws-region" {
   description = "Region Deployed"
   type        = string

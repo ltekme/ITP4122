@@ -21,7 +21,7 @@ module "VTC-Service-EKS_Cluster" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.0"
 
-  cluster_name                   = var.eks-cluster-name
+  cluster_name                   = local.VTC-Service-EKS-Cluster-Name
   cluster_version                = "1.30"
   cluster_endpoint_public_access = true
 
@@ -53,7 +53,7 @@ module "VTC-Service-EKS_Cluster" {
 
   # fargate_profiles = {
   #   main = {
-  #     name = "${var.eks-cluster-name}-Fargate_Profile"
+  #     name = "${local.VTC-Service-EKS-Cluster-Name}-Fargate_Profile"
   #     selectors = [
   #       { namespace = "kube-system" }, { namespace = "default" },
   #     ]
@@ -83,7 +83,7 @@ module "VTC-Service-EKS_Cluster" {
   }
 
   node_security_group_tags = {
-    "kubernetes.io/cluster/${var.eks-cluster-name}" = null
+    "kubernetes.io/cluster/${local.VTC-Service-EKS-Cluster-Name}" = null
   }
 
   depends_on = [
