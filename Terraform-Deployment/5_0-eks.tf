@@ -1,4 +1,4 @@
-/* #######################################################
+/*########################################################
 Main EKS Cluster
 
 Subnets:
@@ -41,25 +41,24 @@ module "VTC-Service-EKS_Cluster" {
     attach_cluster_primary_security_group = true
   }
 
-  # eks_managed_node_groups = {
-  #   main-wg = {
-  #     min_size       = 1
-  #     max_size       = 3
-  #     desired_size   = 1
-  #     instance_types = ["t3.large"]
-  #     capacity_type  = "SPOT"
-  #   }
-  # }
-
-  fargate_profiles = {
-    main = {
-      name = "${var.eks-cluster-name}-Fargate_Profile"
-      selectors = [
-        { namespace = "kube-system" },
-        { namespace = "default" }
-      ]
+  eks_managed_node_groups = {
+    main-wg = {
+      min_size       = 1
+      max_size       = 3
+      desired_size   = 1
+      instance_types = ["t3.large"]
+      capacity_type  = "SPOT"
     }
   }
+
+  # fargate_profiles = {
+  #   main = {
+  #     name = "${var.eks-cluster-name}-Fargate_Profile"
+  #     selectors = [
+  #       { namespace = "kube-system" }, { namespace = "default" },
+  #     ]
+  #   }
+  # }
 
   access_entries = {
     Main = {

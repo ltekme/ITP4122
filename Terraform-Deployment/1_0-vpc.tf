@@ -1,4 +1,4 @@
-/* #######################################################
+/*########################################################
 Main VPC Block
 
 CIDR: 10.0.0.0/16
@@ -16,7 +16,7 @@ resource "aws_vpc" "VTC-Service" {
 }
 
 
-/* #######################################################
+/*########################################################
 VPC Internet Access Gateway
 
 ########################################################*/
@@ -29,7 +29,7 @@ resource "aws_internet_gateway" "VTC-Service" {
 }
 
 
-/* #######################################################
+/*########################################################
 Elastic IP for NAT Gateway
 
 ########################################################*/
@@ -52,7 +52,7 @@ resource "aws_eip" "VTC-Service-EIP-NAT-AZ_B" {
 }
 
 
-/* #######################################################
+/*########################################################
 VPC NAT Gateway For Private Subnets
 
 ########################################################*/
@@ -63,9 +63,7 @@ resource "aws_nat_gateway" "VTC_Service-private-AZ_A" {
   allocation_id = aws_eip.VTC-Service-EIP-NAT-AZ_A.id
 
   depends_on = [
-    aws_subnet.VTC_Service-public-AZ_A,
-    aws_internet_gateway.VTC-Service,
-    aws_eip.VTC-Service-EIP-NAT-AZ_A
+    aws_internet_gateway.VTC-Service
   ]
 
   tags = {
@@ -80,9 +78,7 @@ resource "aws_nat_gateway" "VTC_Service-private-AZ_B" {
   allocation_id = aws_eip.VTC-Service-EIP-NAT-AZ_B.id
 
   depends_on = [
-    aws_subnet.VTC_Service-public-AZ_B,
-    aws_internet_gateway.VTC-Service,
-    aws_eip.VTC-Service-EIP-NAT-AZ_B
+    aws_internet_gateway.VTC-Service
   ]
   tags = {
     Name = "${aws_vpc.VTC-Service.tags.Name}-NAT_GW-AZ_B"

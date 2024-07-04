@@ -1,4 +1,4 @@
-/* #######################################################
+/*########################################################
 RDS Subnet Groups
 
 VTC_Service-MAIN_RDS-mysql:
@@ -17,8 +17,8 @@ resource "aws_security_group" "VTC_Service-MAIN_RDS-mysql" {
   }
 
   egress {
-    from_port   = -1
-    to_port     = -1
+    from_port   = 0
+    to_port     = 0
     protocol    = -1
     cidr_blocks = ["0.0.0.0/0"]
   }

@@ -1,6 +1,7 @@
-##########################################################
-# Terraform Variables
-##########################################################
+/*########################################################
+Terraform Variables
+
+########################################################*/
 variable "project_name" {
   description = "The name of the project"
   type        = string
@@ -22,19 +23,18 @@ variable "aws-region" {
 variable "rds-master-user" {
   description = "RDS Master Username - TO BE CHANGED"
   type        = string
-  default     = "itp4122"
 }
 
 variable "rds-master-password" {
   description = "RDS Master Password - TO BE CHANGED"
   type        = string
-  default     = "itp4122_master_db"
 }
 
 
-##########################################################
-# Context Based Terraform Variables
-##########################################################
+/*########################################################
+Context Based Terraform Variables
+
+########################################################*/
 variable "eks-access-role-arn" {
   description = "Role ARN For EKS ADMIN Access Entry"
   type        = string

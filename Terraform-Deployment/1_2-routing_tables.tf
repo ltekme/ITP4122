@@ -1,4 +1,4 @@
-/* #######################################################
+/*########################################################
 Route Tables
 
 Public Route Table:
@@ -61,8 +61,9 @@ resource "aws_route_table" "VTC_Service-private-AZ_B-Route_Table" {
 }
 
 
-/* #######################################################
+/*########################################################
 Public Route Tables Associations
+
 ########################################################*/
 resource "aws_route_table_association" "VTC_Service-public-AZ_A-RTB-Association" {
   // subnet in availability zone A
@@ -77,8 +78,9 @@ resource "aws_route_table_association" "VTC_Service-public-AZ_B-RTB-Association"
 }
 
 
-/* #######################################################
+/*########################################################
 Private Route Tables Associations
+
 ########################################################*/
 resource "aws_route_table_association" "VTC_Service-private-AZ_A-RTB-Association" {
   // subnet in availability zone A
