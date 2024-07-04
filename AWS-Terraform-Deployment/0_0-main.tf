@@ -1,14 +1,14 @@
 /*########################################################
-Terraform
+Terraform Requiements
 
 ########################################################*/
 terraform {
-  required_version = ">= 0.13"
+  required_version = ">= 1.9.1"
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 4.48.0"
+      version = ">= 5.57.0"
     }
 
     helm = {
@@ -18,7 +18,7 @@ terraform {
 
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = ">= 2.16.1"
+      version = ">= 2.11.0"
     }
   }
 }
@@ -49,11 +49,11 @@ Helm Terraform Provider FOr EKS CLuster
 ########################################################*/
 provider "helm" {
   kubernetes {
-    host                   = local.VTC-Service-EKS-Cluster-Endpoint
-    cluster_ca_certificate = base64decode(local.VTC-Service-EKS-Cluster-CA-Certificate)
+    host                   = module.VTC-Service-EKS_Cluster.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.VTC-Service-EKS_Cluster.cluster_certificate_authority_data)
     exec {
       api_version = "client.authentication.k8s.io/v1beta1"
-      args        = ["eks", "get-token", "--cluster-name", local.VTC-Service-EKS-Cluster-Name]
+      args        = ["eks", "get-token", "--cluster-name", local.VTC-Service-EKS-Cluster-Name, "--region", var.aws-region]
       command     = "aws"
     }
   }
@@ -61,15 +61,18 @@ provider "helm" {
 
 
 /*########################################################
-Kubernates Provider for EKS Cluster
+Terraform Providers setup
+
+Providers:
+    Kubernates
 
 ########################################################*/
 provider "kubernetes" {
-  host                   = local.VTC-Service-EKS-Cluster-Endpoint
-  cluster_ca_certificate = base64decode(local.VTC-Service-EKS-Cluster-CA-Certificate)
+  host                   = module.VTC-Service-EKS_Cluster.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.VTC-Service-EKS_Cluster.cluster_certificate_authority_data)
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
-    args        = ["eks", "get-token", "--cluster-name", local.VTC-Service-EKS-Cluster-Name]
+    args        = ["eks", "get-token", "--cluster-name", module.VTC-Service-EKS_Cluster.cluster_name, "--region", var.aws-region]
     command     = "aws"
   }
 }

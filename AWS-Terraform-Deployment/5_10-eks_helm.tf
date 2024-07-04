@@ -18,28 +18,34 @@ resource "helm_release" "aws-load-balancer-controller" {
   chart      = "aws-load-balancer-controller"
   namespace  = "kube-system"
 
-  set { // --set clusterName=my-cluster
+  set {
     name  = "clusterName"
     value = module.VTC-Service-EKS_Cluster.cluster_name
   }
 
-  set { // --set serviceAccount.name=aws-load-balancer-controller
-    name  = "serviceAccount.name"
-    value = "aws-load-balancer-controller"
-  }
-
-  set { // --set serviceAccount.create=false
-    name  = "serviceAccount.create"
-    value = "false"
-  }
-
-  set { // Set image tags to prevent newer image breaking things
+  set {
     name  = "image.tag"
     value = "v2.8.1"
   }
 
+  set {
+    name  = "serviceAccount.name"
+    value = "aws-load-balancer-controller"
+  }
+
+  set {
+    name  = "serviceAccount.create"
+    value = true
+  }
+
+  set {
+    name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+    value = aws_iam_role.VTC_Service-AWS-EKS-Load-Balancer-Controller.arn
+  }
+
   depends_on = [
     module.VTC-Service-EKS_Cluster,
-    aws_iam_role_policy_attachment.VTC_Service-AWS-EKS-Load-Balancer-Controller-Policy-Attachment
+    aws_iam_role_policy_attachment.VTC_Service-AWS-EKS-Load-Balancer-Controller-Policy-Attachment,
+    # kubernetes_service_account.aws-load-balancer-controller
   ]
 }

@@ -69,7 +69,7 @@ data "aws_iam_policy_document" "VTC_Service-AWS-EKS-Load-Balancer-Controller-Ass
 
 resource "aws_iam_role" "VTC_Service-AWS-EKS-Load-Balancer-Controller" {
   // Role for AWS EKS Load Balancer Controller
-  name               = "${var.project_name}-web-identity-role"
+  name               = "${var.project_name}-AWS-EKS-Load-Balancer-Controller"
   assume_role_policy = data.aws_iam_policy_document.VTC_Service-AWS-EKS-Load-Balancer-Controller-Assume_Role-Policy.json
 }
 

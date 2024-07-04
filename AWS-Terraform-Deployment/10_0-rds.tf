@@ -2,63 +2,44 @@
 Main RDS cluster
 
 ########################################################*/
-# resource "aws_rds_cluster" "database" {
-#   # cluster_identifier      = var.cluster_identifier
-#   db_subnet_group_name    = "${aws_db_subnet_group.VTC_Service-MAIN_RDS.name}"
-#   vpc_security_group_ids  = var.vpc_security_group_ids
-#   engine_mode             = "serverless"
-#   enable_http_endpoint    = var.enable_http_endpoint
-#   master_username         = var.master_username
-#   master_password         = random_password.rng.result
-#   database_name           = var.name
-#   backup_retention_period = var.backup_retention_period
-#   skip_final_snapshot     = var.skip_final_snapshot
-#   deletion_protection     = var.deletion_protection
-#   engine                  = "aurora-mysql"
-#   engine_version          = "8.0.mysql_aurora.3.02.0"
+module "aurora_mysql_v2" {
+  source  = "terraform-aws-modules/rds-aurora/aws"
+  version = "9.4.0"
 
-#   serverlessv2_scaling_configuration {
-#     max_capacity = var.max_capacity
-#     min_capacity = var.min_capacity
-#   }
+  name = lower("${var.project_name}-VTC-Service-Main-mysql-aurora")
 
-#   lifecycle {
-#     ignore_changes = [
-#       engine_version,
-#       availability_zones,
-#       master_username,
-#       master_password,
-#     ]
-#   }
+  engine                     = "aurora-mysql"
+  engine_mode                = "provisioned"
+  engine_version             = "8.0"
 
-#   tags = {
-#     Environment = var.env
-#     Name        = var.name
-#   }
-# }
+  storage_encrypted = true
+  master_username   = var.rds-master-user
+  master_password   = var.rds-master-password
 
-# resource "aws_rds_cluster_instance" "cluster_instances" {
-#   identifier         = "${var.cluster_identifier}-serverless"
-#   cluster_identifier = aws_rds_cluster.database.id
-#   instance_class     = "db.serverless"
-#   engine             = aws_rds_cluster.database.engine
-#   engine_version     = aws_rds_cluster.database.engine_version
-# }
+  vpc_id               = aws_vpc.VTC-Service.id
+  db_subnet_group_name = aws_db_subnet_group.VTC_Service-MAIN_RDS.name
 
-# resource "aws_db_subnet_group" "db_subnet_group" {
-#   name       = "${var.cluster_identifier}-subnet-group"
-#   subnet_ids = var.subnet_ids
+  security_group_rules = {
+    vpc_ingress = {
+      cidr_blocks = [
+        aws_subnet.VTC_Service-private-AZ_A.cidr_block,
+        aws_subnet.VTC_Service-private-AZ_B.cidr_block
+      ]
+    }
+  }
 
-#   tags = {
-#     Environment = var.env
-#   }
-# }
+  monitoring_interval = 60
 
-# resource "random_password" "rng" {
-#   length  = 16
-#   special = false
+  apply_immediately   = true
+  skip_final_snapshot = true
 
-#   keepers = {
-#     cluster_identifier = var.cluster_identifier
-#   }
-# }
+  serverlessv2_scaling_configuration = {
+    min_capacity = 1
+    max_capacity = 2
+  }
+
+  instance_class = "db.serverless"
+  instances = {
+    one = {}
+  }
+}
