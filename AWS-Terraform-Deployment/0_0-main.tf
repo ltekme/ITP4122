@@ -16,9 +16,9 @@ terraform {
       version = ">= 2.14.0"
     }
 
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = ">= 2.11.0"
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = "1.14.0"
     }
   }
 }
@@ -61,20 +61,13 @@ provider "helm" {
 
 
 /*########################################################
-Terraform Providers setup
-
-Providers:
-    Kubernates
+Kubectl Provider Setup
 
 ########################################################*/
-provider "kubernetes" {
-  host                   = module.VTC-Service-EKS_Cluster.cluster_endpoint
+provider "kubectl" {
+  host = module.VTC-Service-EKS_Cluster.cluster_endpoint
   cluster_ca_certificate = base64decode(module.VTC-Service-EKS_Cluster.cluster_certificate_authority_data)
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    args        = ["eks", "get-token", "--cluster-name", module.VTC-Service-EKS_Cluster.cluster_name, "--region", var.aws-region]
-    command     = "aws"
-  }
+  token = data.aws_eks_cluster_auth.VTC-Service-EKS_Cluster.token
 }
 
 

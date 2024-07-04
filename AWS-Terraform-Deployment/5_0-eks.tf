@@ -96,3 +96,7 @@ module "VTC-Service-EKS_Cluster" {
     aws_route_table.VTC_Service-private-AZ_B-Route_Table,
   ]
 }
+
+data "aws_eks_cluster_auth" "VTC-Service-EKS_Cluster" {
+  name = module.VTC-Service-EKS_Cluster.cluster_name
+}

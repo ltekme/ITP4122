@@ -28,6 +28,7 @@ resource "aws_security_group" "VTC_Service-Main-mysql-aurora" {
   }
 }
 
+
 /*########################################################
 Main RDS cluster Subnet Group
 
