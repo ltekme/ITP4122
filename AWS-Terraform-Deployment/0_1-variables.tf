@@ -14,14 +14,10 @@ variable "aws-region" {
   default     = "us-east-1"
 }
 
-variable "rds-master-user" {
-  description = "RDS Master Username - TO BE CHANGED"
+variable "Moodle-Database-Name" {
+  description = "Moodle Database Name"
   type        = string
-}
-
-variable "rds-master-password" {
-  description = "RDS Master Password - TO BE CHANGED"
-  type        = string
+  default     = "moodle"
 }
 
 
@@ -31,5 +27,15 @@ Context Based Terraform Variables
 ########################################################*/
 variable "eks-access-role-arn" {
   description = "Role ARN For EKS ADMIN Access Entry"
+  type        = string
+}
+
+variable "rds-master-user" {
+  description = "RDS Master Username - TO BE CHANGED"
+  type        = string
+}
+
+variable "rds-master-password" {
+  description = "RDS Master Password - TO BE CHANGED"
   type        = string
 }

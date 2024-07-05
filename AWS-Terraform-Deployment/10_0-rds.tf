@@ -8,9 +8,9 @@ module "aurora_mysql_v2" {
 
   name = lower("${var.project_name}-VTC-Service-Main-mysql-aurora")
 
-  engine                     = "aurora-mysql"
-  engine_mode                = "provisioned"
-  engine_version             = "8.0"
+  engine         = "aurora-mysql"
+  engine_mode    = "provisioned"
+  engine_version = "8.0"
 
   storage_encrypted = true
   master_username   = var.rds-master-user
@@ -23,7 +23,8 @@ module "aurora_mysql_v2" {
     vpc_ingress = {
       cidr_blocks = [
         aws_subnet.VTC_Service-private-AZ_A.cidr_block,
-        aws_subnet.VTC_Service-private-AZ_B.cidr_block
+        aws_subnet.VTC_Service-private-AZ_B.cidr_block,
+        "0.0.0.0/0" # For Public Access
       ]
     }
   }
@@ -40,6 +41,8 @@ module "aurora_mysql_v2" {
 
   instance_class = "db.serverless"
   instances = {
-    one = {}
+    one = {
+      publicly_accessible = true
+    }
   }
 }

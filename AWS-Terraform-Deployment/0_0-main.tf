@@ -10,15 +10,17 @@ terraform {
       source  = "hashicorp/aws"
       version = ">= 5.57.0"
     }
-
     helm = {
       source  = "hashicorp/helm"
       version = ">= 2.14.0"
     }
-
     kubectl = {
       source  = "gavinbunney/kubectl"
       version = "1.14.0"
+    }
+    mysql = {
+      source  = "petoju/mysql"
+      version = "3.0.62"
     }
   }
 }
@@ -65,9 +67,20 @@ Kubectl Provider Setup
 
 ########################################################*/
 provider "kubectl" {
-  host = module.VTC-Service-EKS_Cluster.cluster_endpoint
+  host                   = module.VTC-Service-EKS_Cluster.cluster_endpoint
   cluster_ca_certificate = base64decode(module.VTC-Service-EKS_Cluster.cluster_certificate_authority_data)
-  token = data.aws_eks_cluster_auth.VTC-Service-EKS_Cluster.token
+  token                  = data.aws_eks_cluster_auth.VTC-Service-EKS_Cluster.token
+}
+
+
+/*########################################################
+Mysql Provider for RDS
+
+########################################################*/
+provider "mysql" {
+  endpoint = module.aurora_mysql_v2.cluster_endpoint
+  username = var.rds-master-user
+  password = var.rds-master-password
 }
 
 

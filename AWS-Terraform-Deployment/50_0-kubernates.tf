@@ -6,8 +6,9 @@ Note, Deployed LB require manual deletion of LB
 Retry VPC Destroy are needed or manual delete are needed
 
 ########################################################*/
-resource "kubectl_manifest" "provisioning" {
-  for_each  = fileset("", "./EKS-Manifests/*.yaml")
+resource "kubectl_manifest" "NGINX-provisioning" {
+  // nginx deployment checking
+  for_each  = fileset("", "./EKS-Manifests/NGINX-*.yaml")
   yaml_body = file(each.value)
 
   depends_on = [

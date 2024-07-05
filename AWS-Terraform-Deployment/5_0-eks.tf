@@ -26,9 +26,12 @@ module "VTC-Service-EKS_Cluster" {
   cluster_endpoint_public_access = true
 
   cluster_addons = {
-    coredns    = {}
-    kube-proxy = {}
-    vpc-cni    = {}
+    # coredns            = {}
+    kube-proxy         = {}
+    vpc-cni            = {}
+    aws-ebs-csi-driver = {
+      service_account_role_arn = aws_iam_role.VTC_Service-AWS-EBS-CSI.arn
+    }
   }
 
   vpc_id                   = aws_vpc.VTC-Service.id
@@ -46,7 +49,7 @@ module "VTC-Service-EKS_Cluster" {
       min_size       = 1
       max_size       = 3
       desired_size   = 1
-      instance_types = ["t3.large"]
+      instance_types = ["t3.medium"]
       capacity_type  = "SPOT"
     }
   }
