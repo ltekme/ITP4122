@@ -1,6 +1,9 @@
 /*########################################################
 Kubenates Moodle locals
 
+Note: When Applying Sometimes will error because namespace not found
+      Retry apply untill done
+
 ########################################################*/
 locals {
   Moodle-K8s = {
@@ -12,18 +15,26 @@ locals {
       Moodledata-Data = "moodle-pvc-moodledata-data"
     }
     Deployment = {
-      App-Lable-Name = "moodle"
+      App-Lable-Name = "app: moodle"
       Name           = "moodle-deployment"
       Ports = {
         "8080" = {
-          Number = 8080
-          Name   = "moodle-8080"
+          Number   = 8080
+          Name     = "moodle-8080"
+          Protocol = "TCP"
         }
         "8443" = {
-          Number = 8443
-          Name   = "moodle-8443"
+          Number   = 8443
+          Name     = "moodle-8443"
+          Protocol = "TCP"
         }
       }
+    }
+    Service = {
+      Name = "moodle-service"
+    }
+    Ingress = {
+      Name = "moodle-ingress"
     }
   }
 }
@@ -47,11 +58,6 @@ YAML
     module.VTC-Service-EKS_Cluster,
     helm_release.aws-load-balancer-controller
   ]
-  lifecycle {
-    replace_triggered_by = [
-      null_resource.always_run
-    ]
-  }
 }
 
 
@@ -67,6 +73,7 @@ metadata:
   name: ${local.Moodle-K8s.Config-Map}
   namespace: ${local.Moodle-K8s.Namespace}
 data:
+  BITNAMI_DEBUG: "true"
   ALLOW_EMPTY_PASSWORD: "false"
   MOODLE_DATABASE_NAME: ${var.Moodle-Database-Name}
   MOODLE_DATABASE_TYPE: "auroramysql"
@@ -80,11 +87,6 @@ YAML
     kubectl_manifest.VTC_Service-MOODLE-Namespace
   ]
 
-  lifecycle {
-    replace_triggered_by = [
-      null_resource.always_run
-    ]
-  }
 }
 
 
@@ -110,11 +112,6 @@ YAML
     kubectl_manifest.VTC_Service-MOODLE-Namespace
   ]
 
-  lifecycle {
-    replace_triggered_by = [
-      null_resource.always_run
-    ]
-  }
 }
 
 
@@ -147,11 +144,6 @@ YAML
     kubectl_manifest.VTC_Service-MOODLE-Namespace
   ]
 
-  lifecycle {
-    replace_triggered_by = [
-      null_resource.always_run
-    ]
-  }
 }
 
 resource "kubectl_manifest" "VTC_Service-MOODLE-PVC-Moodledata_data" {
@@ -179,11 +171,6 @@ YAML
     kubectl_manifest.VTC_Service-MOODLE-Namespace
   ]
 
-  lifecycle {
-    replace_triggered_by = [
-      null_resource.always_run
-    ]
-  }
 }
 
 
@@ -203,11 +190,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ${local.Moodle-K8s.Deployment.App-Lable-Name}
+      ${local.Moodle-K8s.Deployment.App-Lable-Name}
   template:
     metadata:
       labels:
-        app: ${local.Moodle-K8s.Deployment.App-Lable-Name}
+        ${local.Moodle-K8s.Deployment.App-Lable-Name}
     spec:
       volumes:
         - name: moodle-data
@@ -241,12 +228,76 @@ YAML
     kubectl_manifest.VTC_Service-MOODLE-PVC-Moodledata_data,
   ]
 
-  lifecycle {
-    replace_triggered_by = [
-      null_resource.always_run
-    ]
-  }
 }
+
+
+/*########################################################
+Kubenates Moodle Service for Port 8080
+
+##################################################d######*/
+resource "kubectl_manifest" "VTC_Service-MOODLE-Service_8080" {
+  // Service For Moodle Deployment
+  yaml_body = <<YAML
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${local.Moodle-K8s.Service.Name}
+  namespace: ${local.Moodle-K8s.Namespace}
+spec:
+  ports:
+    - port: ${local.Moodle-K8s.Deployment.Ports.8080.Number}
+      targetPort: ${local.Moodle-K8s.Deployment.Ports.8080.Number}
+      protocol: ${local.Moodle-K8s.Deployment.Ports.8080.Protocol}
+  type: NodePort
+  selector:
+    ${local.Moodle-K8s.Deployment.App-Lable-Name}
+YAML
+
+  depends_on = [
+    kubectl_manifest.VTC_Service-MOODLE-Deployment,
+    kubectl_manifest.VTC_Service-MOODLE-Namespace
+  ]
+
+}
+
+
+/*########################################################
+Kubenates Moodle Ingress
+
+port: 8080 -> 80
+
+########################################################*/
+resource "kubectl_manifest" "VTC_Service-MOODLE-Ingress_8080" {
+  yaml_body = <<YAML
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: ${local.Moodle-K8s.Namespace}
+  name: ${local.Moodle-K8s.Ingress.Name}
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: ${local.Moodle-K8s.Service.Name}
+              port:
+                number: ${local.Moodle-K8s.Deployment.Ports.8080.Number}
+YAML
+
+  depends_on = [
+    kubectl_manifest.VTC_Service-MOODLE-Service_8080,
+    kubectl_manifest.VTC_Service-MOODLE-Namespace
+  ]
+
+}
+
 
 
 /*########################################################
@@ -264,10 +315,4 @@ resource "kubectl_manifest" "VTC_Service-MOODLE-provisioning" {
     kubectl_manifest.VTC_Service-MOODLE-PVC-Moodle_data,
     kubectl_manifest.VTC_Service-MOODLE-PVC-Moodledata_data,
   ]
-
-  lifecycle {
-    replace_triggered_by = [
-      null_resource.always_run
-    ]
-  }
 }

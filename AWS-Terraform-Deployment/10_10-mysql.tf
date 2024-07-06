@@ -8,4 +8,8 @@ resource "mysql_database" "VTC_Service-Moodle" {
   depends_on = [
     module.aurora_mysql_v2
   ]
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
