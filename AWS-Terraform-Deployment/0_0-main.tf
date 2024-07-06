@@ -89,3 +89,14 @@ Current AWS Caller Identy
 
 ########################################################*/
 data "aws_caller_identity" "current" {}
+
+
+/*########################################################
+Always Replace Resource Trigger
+
+########################################################*/
+resource "null_resource" "always_run" {
+  triggers = {
+    timestamp = "${timestamp()}"
+  }
+}

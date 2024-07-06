@@ -12,9 +12,10 @@ module "aurora_mysql_v2" {
   engine_mode    = "provisioned"
   engine_version = "8.0"
 
-  storage_encrypted = true
-  master_username   = var.rds-master-user
-  master_password   = var.rds-master-password
+  master_username                     = var.rds-master-user
+  master_password                     = var.rds-master-password
+  iam_database_authentication_enabled = false
+  manage_master_user_password         = false
 
   vpc_id               = aws_vpc.VTC-Service.id
   db_subnet_group_name = aws_db_subnet_group.VTC_Service-MAIN_RDS.name
@@ -28,6 +29,8 @@ module "aurora_mysql_v2" {
       ]
     }
   }
+
+  storage_encrypted = true
 
   monitoring_interval = 60
 
