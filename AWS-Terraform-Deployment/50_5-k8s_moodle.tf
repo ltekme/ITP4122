@@ -84,7 +84,6 @@ data:
   MOODLE_DATABASE_PASSWORD: ${var.rds-master-password}
 YAML
   depends_on = [
-    # mysql_database.VTC_Service-Moodle,
     kubectl_manifest.VTC_Service-MOODLE-Namespace
   ]
 }
@@ -95,7 +94,6 @@ Kubenates Moodle StorageClass provisioner
 
 ##################################################d######*/
 resource "kubectl_manifest" "VTC_Service-MOODLE-StorageClass" {
-  // Claim for Moodle_data
   yaml_body = <<YAML
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
@@ -116,9 +114,10 @@ YAML
 /*########################################################
 Kubenates Moodle Persistence Volume Claim provisioner
 
+Moodle_data
+
 ##################################################d######*/
 resource "kubectl_manifest" "VTC_Service-MOODLE-PVC-Moodle_data" {
-  // Claim for Moodle_data
   yaml_body = <<YAML
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -136,16 +135,20 @@ spec:
     driver: efs.csi.aws.com
     volumeHandle: ${aws_efs_file_system.VTC_Service-EFS-File_System.id}
 YAML
-
   depends_on = [
     kubectl_manifest.VTC_Service-MOODLE-StorageClass,
     kubectl_manifest.VTC_Service-MOODLE-Namespace
   ]
-
 }
 
+
+/*########################################################
+Kubenates Moodle Persistence Volume Claim provisioner
+
+Moodledata_data
+
+##################################################d######*/
 resource "kubectl_manifest" "VTC_Service-MOODLE-PVC-Moodledata_data" {
-  // Claim for Moodledata_data
   yaml_body = <<YAML
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -175,7 +178,6 @@ Kubenates Moodle Deployment Provisioner
 
 ########################################################*/
 resource "kubectl_manifest" "VTC_Service-MOODLE-Deployment" {
-  // nginx deployment checking
   yaml_body = <<YAML
 apiVersion: apps/v1
 kind: Deployment
@@ -230,7 +232,6 @@ Kubenates Moodle Service for Port 8080
 
 ##################################################d######*/
 resource "kubectl_manifest" "VTC_Service-MOODLE-Service_8080" {
-  // Service For Moodle Deployment
   yaml_body = <<YAML
 apiVersion: v1
 kind: Service
@@ -295,7 +296,6 @@ resource "time_sleep" "VTC_Service-MOODLE-Ingress_8080-Create_Duration" {
 
   create_duration = "30s"
 }
-
 
 data "external" "VTC_Service-MOODLE-Ingress_8080-External_Endpoint" {
   // Kubenates Moodle Ingress External Endpoint

@@ -12,3 +12,6 @@
 
 # AWS Account Credentials
 .aws_account
+
+# Route53 Zone File
+AWS-Terraform-Deployment/15_5-route53_import.txt

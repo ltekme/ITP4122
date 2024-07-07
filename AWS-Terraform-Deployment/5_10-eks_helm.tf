@@ -1,6 +1,4 @@
 /*########################################################
-Main EKS Cluster Permissions
-
 AWS Load Balancer Controller Install
 
 Versions:

@@ -4,13 +4,18 @@ Domain Resource
 ########################################################*/
 resource "aws_route53_zone" "VTC_Service-Primary" {
   name = var.VTC_Service-Primary-Domain
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 
 /*########################################################
 Domain Record for Moodle
+
 ########################################################*/
-resource "aws_route53_record" "VTC_Service-Moodle" {
+resource "aws_route53_record" "VTC_Service-Primary-Moodle" {
   zone_id = aws_route53_zone.VTC_Service-Primary.zone_id
   name    = "moodle.${aws_route53_zone.VTC_Service-Primary.name}"
   type    = "A"
