@@ -37,6 +37,10 @@ resource "aws_eip" "VTC-Service-EIP-NAT-AZ_A" {
   // Avalability Zone A - NAT Gateway
   domain = "vpc"
 
+  depends_on = [
+    aws_internet_gateway.VTC-Service
+  ]
+
   tags = {
     Name = "${aws_vpc.VTC-Service.tags.Name}-EIP-NATGW-AZ_A"
   }
@@ -46,8 +50,12 @@ resource "aws_eip" "VTC-Service-EIP-NAT-AZ_B" {
   // Avalability Zone B - NAT Gateway
   domain = "vpc"
 
+  depends_on = [
+    aws_internet_gateway.VTC-Service
+  ]
+
   tags = {
-    Name = "${aws_vpc.VTC-Service.tags.Name}-EIP-EIP-NATGW-AZ_B"
+    Name = "${aws_vpc.VTC-Service.tags.Name}-EIP-NATGW-AZ_B"
   }
 }
 

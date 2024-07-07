@@ -77,11 +77,11 @@ provider "kubectl" {
 Mysql Provider for RDS
 
 ########################################################*/
-provider "mysql" {
-  endpoint = module.aurora_mysql_v2.cluster_endpoint
-  username = var.rds-master-user
-  password = var.rds-master-password
-}
+# provider "mysql" {
+#   endpoint = module.aurora_mysql_v2.cluster_endpoint
+#   username = var.rds-master-user
+#   password = var.rds-master-password
+# }
 
 
 /*########################################################

@@ -11,3 +11,8 @@ output "RDS-Endpoint" {
   // Aurora Endpoint
   value = module.aurora_mysql_v2.cluster_endpoint
 }
+
+output "VTC_Service-Moodle-External-Endpoint" {
+  // EKS Moodle Ingress Endpoint
+  value = data.external.VTC_Service-MOODLE-Ingress_8080-External_Endpoint.result.hostname
+}

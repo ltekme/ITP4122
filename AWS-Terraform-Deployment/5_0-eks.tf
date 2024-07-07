@@ -27,8 +27,8 @@ module "VTC-Service-EKS_Cluster" {
 
   cluster_addons = {
     # coredns            = {}
-    kube-proxy         = {}
-    vpc-cni            = {}
+    kube-proxy = {}
+    vpc-cni    = {}
     aws-ebs-csi-driver = {
       service_account_role_arn = aws_iam_role.VTC_Service-AWS-EBS-CSI.arn
     }
@@ -97,6 +97,10 @@ module "VTC-Service-EKS_Cluster" {
     aws_nat_gateway.VTC_Service-private-AZ_B,
     aws_route_table.VTC_Service-private-AZ_A-Route_Table,
     aws_route_table.VTC_Service-private-AZ_B-Route_Table,
+
+    # Delay Destroy
+    time_sleep.VTC_Service-EKS-Moodle-Delete-Wait,
+    time_sleep.VTC_Service-EKS-Default-Delete-Wait
   ]
 }
 

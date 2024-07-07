@@ -45,7 +45,7 @@ resource "helm_release" "aws-load-balancer-controller" {
 
   depends_on = [
     module.VTC-Service-EKS_Cluster,
-    # aws_iam_role_policy_attachment.VTC_Service-AWS-EKS-Load-Balancer-Controller-Policy-Attachment,
-    # kubernetes_service_account.aws-load-balancer-controller
+    time_sleep.VTC_Service-EKS-Moodle-Delete-Wait,
+    time_sleep.VTC_Service-EKS-Default-Delete-Wait
   ]
 }

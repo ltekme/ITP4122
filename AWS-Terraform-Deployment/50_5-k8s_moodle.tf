@@ -81,12 +81,10 @@ data:
   MOODLE_DATABASE_USER: ${var.rds-master-user}
   MOODLE_DATABASE_PASSWORD: ${var.rds-master-password}
 YAML
-
   depends_on = [
-    mysql_database.VTC_Service-Moodle,
+    # mysql_database.VTC_Service-Moodle,
     kubectl_manifest.VTC_Service-MOODLE-Namespace
   ]
-
 }
 
 
@@ -105,13 +103,11 @@ metadata:
 provisioner: ebs.csi.aws.com
 volumeBindingMode: WaitForFirstConsumer
 YAML
-
   depends_on = [
     aws_efs_mount_target.VTC_Service-EFS-File_System-Mount-AZ_A,
     aws_efs_file_system.VTC_Service-EFS-File_System,
     kubectl_manifest.VTC_Service-MOODLE-Namespace
   ]
-
 }
 
 
@@ -165,12 +161,10 @@ spec:
     driver: efs.csi.aws.com
     volumeHandle: ${aws_efs_file_system.VTC_Service-EFS-File_System.id}
 YAML
-
   depends_on = [
     kubectl_manifest.VTC_Service-MOODLE-StorageClass,
     kubectl_manifest.VTC_Service-MOODLE-Namespace
   ]
-
 }
 
 
@@ -220,14 +214,12 @@ spec:
             - configMapRef:
                 name: ${local.Moodle-K8s.Config-Map}
 YAML
-
   depends_on = [
     kubectl_manifest.VTC_Service-MOODLE-ConfigMap,
     kubectl_manifest.VTC_Service-MOODLE-Namespace,
     kubectl_manifest.VTC_Service-MOODLE-PVC-Moodle_data,
     kubectl_manifest.VTC_Service-MOODLE-PVC-Moodledata_data,
   ]
-
 }
 
 
@@ -252,12 +244,10 @@ spec:
   selector:
     ${local.Moodle-K8s.Deployment.App-Lable-Name}
 YAML
-
   depends_on = [
     kubectl_manifest.VTC_Service-MOODLE-Deployment,
     kubectl_manifest.VTC_Service-MOODLE-Namespace
   ]
-
 }
 
 
@@ -295,24 +285,23 @@ YAML
     kubectl_manifest.VTC_Service-MOODLE-Service_8080,
     kubectl_manifest.VTC_Service-MOODLE-Namespace
   ]
+}
 
+resource "time_sleep" "VTC_Service-MOODLE-Ingress_8080-Create_Duration" {
+  // 30 second wait before getting ingress endpoint
+  depends_on = [kubectl_manifest.VTC_Service-MOODLE-Ingress_8080]
+
+  create_duration = "30s"
 }
 
 
-
-/*########################################################
-Kubenates Moodle Provisioner
-
-########################################################*/
-resource "kubectl_manifest" "VTC_Service-MOODLE-provisioning" {
-  // Moodle deployment
-  for_each  = fileset("", "./EKS-Manifests/MOODLE-*.yaml")
-  yaml_body = file(each.value)
-
+data "external" "VTC_Service-MOODLE-Ingress_8080-External_Endpoint" {
+  // Kubenates Moodle Ingress External Endpoint
+  program = [
+    "/bin/bash", "-c", 
+    "kubectl get ingress -o=jsonpath={.status.loadBalancer.ingress[0]} -n ${local.Moodle-K8s.Namespace} ${local.Moodle-K8s.Ingress.Name}"
+  ]
   depends_on = [
-    kubectl_manifest.VTC_Service-MOODLE-ConfigMap,
-    kubectl_manifest.VTC_Service-MOODLE-Namespace,
-    kubectl_manifest.VTC_Service-MOODLE-PVC-Moodle_data,
-    kubectl_manifest.VTC_Service-MOODLE-PVC-Moodledata_data,
+    time_sleep.VTC_Service-MOODLE-Ingress_8080-Create_Duration
   ]
 }

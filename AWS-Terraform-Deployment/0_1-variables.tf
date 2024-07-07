@@ -39,3 +39,8 @@ variable "rds-master-password" {
   description = "RDS Master Password - TO BE CHANGED"
   type        = string
 }
+
+variable "VTC_Service-Primary-Domain" {
+  description = "Domain Used by this project"
+  type        = string
+}
