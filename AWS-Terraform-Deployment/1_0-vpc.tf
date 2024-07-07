@@ -17,7 +17,7 @@ resource "aws_vpc" "VTC-Service" {
 
 
 /*########################################################
-VPC Internet Access Gateway
+VPC Internet Gateway
 
 ########################################################*/
 resource "aws_internet_gateway" "VTC-Service" {
@@ -66,7 +66,6 @@ VPC NAT Gateway For Private Subnets
 ########################################################*/
 resource "aws_nat_gateway" "VTC_Service-private-AZ_A" {
   // Avalability Zone A - NAT Gateway
-
   subnet_id     = aws_subnet.VTC_Service-public-AZ_A.id
   allocation_id = aws_eip.VTC-Service-EIP-NAT-AZ_A.id
 
@@ -81,7 +80,6 @@ resource "aws_nat_gateway" "VTC_Service-private-AZ_A" {
 
 resource "aws_nat_gateway" "VTC_Service-private-AZ_B" {
   // Avalability Zone B - NAT Gateway
-
   subnet_id     = aws_subnet.VTC_Service-public-AZ_B.id
   allocation_id = aws_eip.VTC-Service-EIP-NAT-AZ_B.id
 

@@ -42,7 +42,7 @@ resource "aws_route_table" "VTC_Service-private-AZ_A-Route_Table" {
   }
 
   tags = {
-    Name = "${aws_vpc.VTC-Service.tags.Name}-Private-RTB"
+    Name = "${aws_vpc.VTC-Service.tags.Name}-Private-RTB-AZ_A"
   }
 }
 
@@ -56,7 +56,7 @@ resource "aws_route_table" "VTC_Service-private-AZ_B-Route_Table" {
   }
 
   tags = {
-    Name = "${aws_vpc.VTC-Service.tags.Name}-Private-RTB"
+    Name = "${aws_vpc.VTC-Service.tags.Name}-Private-RTB-AZ_B"
   }
 }
 
