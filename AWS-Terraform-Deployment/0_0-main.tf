@@ -85,10 +85,13 @@ Mysql Provider for RDS
 
 
 /*########################################################
-Current AWS Caller Identy
+Additional AWS Data
 
 ########################################################*/
 data "aws_caller_identity" "current" {}
+data "aws_elb_hosted_zone_id" "main" {
+  region = var.aws-region
+}
 
 
 /*########################################################

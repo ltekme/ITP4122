@@ -41,3 +41,8 @@ Manual deletion of a the mysql tf state is also needed. Execute the command belo
   This command removes the TF state for the database created for moodle.
 
 In most cases, when executing terraform destroy. This resource deletion timeout. Possablly caused by RDS beign deleted before this finishes.
+
+## Default Moodle Username and Password
+
+- Username: user
+- Password: bitnami

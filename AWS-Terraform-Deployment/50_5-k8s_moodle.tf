@@ -74,6 +74,8 @@ metadata:
   namespace: ${local.Moodle-K8s.Namespace}
 data:
   BITNAMI_DEBUG: "true"
+  MOODLE_USERNAME: ${var.Moodle-Username}
+  MOODLE_PASSWORD: ${var.Moodle-Password}
   ALLOW_EMPTY_PASSWORD: "false"
   MOODLE_DATABASE_NAME: ${var.Moodle-Database-Name}
   MOODLE_DATABASE_TYPE: "auroramysql"
@@ -298,7 +300,7 @@ resource "time_sleep" "VTC_Service-MOODLE-Ingress_8080-Create_Duration" {
 data "external" "VTC_Service-MOODLE-Ingress_8080-External_Endpoint" {
   // Kubenates Moodle Ingress External Endpoint
   program = [
-    "/bin/bash", "-c", 
+    "/bin/bash", "-c",
     "kubectl get ingress -o=jsonpath={.status.loadBalancer.ingress[0]} -n ${local.Moodle-K8s.Namespace} ${local.Moodle-K8s.Ingress.Name}"
   ]
   depends_on = [

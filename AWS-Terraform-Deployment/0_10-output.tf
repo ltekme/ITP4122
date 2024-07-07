@@ -16,3 +16,7 @@ output "VTC_Service-Moodle-External-Endpoint" {
   // EKS Moodle Ingress Endpoint
   value = data.external.VTC_Service-MOODLE-Ingress_8080-External_Endpoint.result.hostname
 }
+
+output "VTC_Service-Moodle-Self-DNS-Endpoint" {
+  value = aws_route53_record.VTC_Service-Moodle.name
+}

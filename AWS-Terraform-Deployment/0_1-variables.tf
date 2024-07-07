@@ -25,18 +25,29 @@ variable "Moodle-Database-Name" {
 Context Based Terraform Variables
 
 ########################################################*/
+variable "Moodle-Username" {
+  description = "Initial Moodle Username"
+  type        = string
+  default     = "user"
+}
+
+variable "Moodle-Password" {
+  description = "Initial Moodle Password"
+  default     = "bitnami"
+}
+
 variable "eks-access-role-arn" {
   description = "Role ARN For EKS ADMIN Access Entry"
   type        = string
 }
 
 variable "rds-master-user" {
-  description = "RDS Master Username - TO BE CHANGED"
+  description = "RDS Master Username"
   type        = string
 }
 
 variable "rds-master-password" {
-  description = "RDS Master Password - TO BE CHANGED"
+  description = "RDS Master Password"
   type        = string
 }
 
