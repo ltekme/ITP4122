@@ -27,4 +27,8 @@ RUN curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.30.0/2024-05-12/bin/
     && echo 'export PATH=$HOME/bin:$PATH' >> ~/.bashrc \
     && rm kubectl
 
-
+##########
+# graphviz setup
+# Used to visualise terraform cycle
+RUN apt-get update \
+    && apt install graphviz -y

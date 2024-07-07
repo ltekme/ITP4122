@@ -1,10 +1,17 @@
 # Terraform Files
 **/.terraform
+**/terraform.tfvars
 **/terraform.tfstate
 **/.terraform.lock.hcl
+**/terraform.tfstate.backup
+**/terraform.tfstate.*.backup
+**/.terraform.tfstate.lock.info
 
 # Execution Binaries
 **/kubectl
 
 # AWS Account Credentials
 .aws_account
+
+# Route53 Zone File
+AWS-Terraform-Deployment/15_5-route53_import.txt
