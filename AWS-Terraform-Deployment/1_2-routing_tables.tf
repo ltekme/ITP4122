@@ -1,6 +1,23 @@
-##########################################################
-# Route Tables
-##########################################################
+/*########################################################
+Route Tables
+
+Public Route Table:
+    Subnets: Public subnet in AZ A & B
+    Routes:
+        0.0.0.0/0 -> IGW
+
+Private Route Table:
+    AZ A:
+        Subnets: Private subnets in AZ A
+        Routes:
+            0.0.0.0 -> NAT Gateway in AZ A
+
+    AZ B:
+        Subnets: Private subnets in AZ B
+        Routes:
+            0.0.0.0 -> NAT Gateway in AZ B
+
+########################################################*/
 resource "aws_route_table" "VTC_Service-public-Route_Table" {
   // public subnets
   vpc_id = aws_vpc.VTC-Service.id
@@ -25,7 +42,7 @@ resource "aws_route_table" "VTC_Service-private-AZ_A-Route_Table" {
   }
 
   tags = {
-    Name = "${aws_vpc.VTC-Service.tags.Name}-Private-RTB"
+    Name = "${aws_vpc.VTC-Service.tags.Name}-Private-RTB-AZ_A"
   }
 }
 
@@ -39,14 +56,15 @@ resource "aws_route_table" "VTC_Service-private-AZ_B-Route_Table" {
   }
 
   tags = {
-    Name = "${aws_vpc.VTC-Service.tags.Name}-Private-RTB"
+    Name = "${aws_vpc.VTC-Service.tags.Name}-Private-RTB-AZ_B"
   }
 }
 
 
-##########################################################
-# Public Route Tables Associations
-##########################################################
+/*########################################################
+Public Route Tables Associations
+
+########################################################*/
 resource "aws_route_table_association" "VTC_Service-public-AZ_A-RTB-Association" {
   // subnet in availability zone A
   subnet_id      = aws_subnet.VTC_Service-public-AZ_A.id
@@ -60,9 +78,10 @@ resource "aws_route_table_association" "VTC_Service-public-AZ_B-RTB-Association"
 }
 
 
-##########################################################
-# Private Route Tables Associations
-##########################################################
+/*########################################################
+Private Route Tables Associations
+
+########################################################*/
 resource "aws_route_table_association" "VTC_Service-private-AZ_A-RTB-Association" {
   // subnet in availability zone A
   subnet_id      = aws_subnet.VTC_Service-private-AZ_A.id

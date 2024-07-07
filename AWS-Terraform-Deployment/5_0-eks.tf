@@ -1,4 +1,4 @@
-/* #######################################################
+/*########################################################
 Main EKS Cluster
 
 Subnets:
@@ -17,23 +17,20 @@ Access Entry:
         arn:aws:eks::aws:cluster-access-policy/AmazonEKSAdminPolicy
 
 ########################################################*/
-module "eks" {
+module "VTC-Service-EKS_Cluster" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.0"
 
-  cluster_name                   = "${var.project_name}-VTC_Service"
+  cluster_name                   = local.VTC-Service-EKS-Cluster-Name
   cluster_version                = "1.30"
   cluster_endpoint_public_access = true
 
   cluster_addons = {
-    coredns = {
-      most_recent = true
-    }
-    kube-proxy = {
-      most_recent = true
-    }
-    vpc-cni = {
-      most_recent = true
+    # coredns            = {}
+    kube-proxy = {}
+    vpc-cni    = {}
+    aws-ebs-csi-driver = {
+      service_account_role_arn = aws_iam_role.VTC_Service-AWS-EBS-CSI.arn
     }
   }
 
@@ -52,10 +49,19 @@ module "eks" {
       min_size       = 1
       max_size       = 3
       desired_size   = 1
-      instance_types = ["t3.large"]
+      instance_types = ["t3.medium"]
       capacity_type  = "SPOT"
     }
   }
+
+  # fargate_profiles = {
+  #   main = {
+  #     name = "${local.VTC-Service-EKS-Cluster-Name}-Fargate_Profile"
+  #     selectors = [
+  #       { namespace = "kube-system" }, { namespace = "default" },
+  #     ]
+  #   }
+  # }
 
   access_entries = {
     Main = {
@@ -66,19 +72,23 @@ module "eks" {
         eksadmin = {
           policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSAdminPolicy"
           access_scope = {
-            type       = "cluster"
+            type = "cluster"
           }
         }
         clusteradmin = {
           policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
           access_scope = {
-            type       = "cluster"
+            type = "cluster"
           }
         }
       }
     }
   }
-  
+
+  node_security_group_tags = {
+    "kubernetes.io/cluster/${local.VTC-Service-EKS-Cluster-Name}" = null
+  }
+
   depends_on = [
     aws_subnet.VTC_Service-private-AZ_A,
     aws_subnet.VTC_Service-private-AZ_B,
@@ -87,5 +97,13 @@ module "eks" {
     aws_nat_gateway.VTC_Service-private-AZ_B,
     aws_route_table.VTC_Service-private-AZ_A-Route_Table,
     aws_route_table.VTC_Service-private-AZ_B-Route_Table,
+
+    # Delay Destroy
+    time_sleep.VTC_Service-EKS-Moodle-Delete-Wait,
+    time_sleep.VTC_Service-EKS-Default-Delete-Wait
   ]
+}
+
+data "aws_eks_cluster_auth" "VTC-Service-EKS_Cluster" {
+  name = module.VTC-Service-EKS_Cluster.cluster_name
 }
