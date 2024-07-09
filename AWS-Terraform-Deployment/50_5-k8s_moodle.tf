@@ -283,7 +283,6 @@ spec:
               port:
                 number: ${local.Moodle-K8s.Deployment.Ports.8080.Number}
 YAML
-
   depends_on = [
     kubectl_manifest.VTC_Service-MOODLE-Service_8080,
     kubectl_manifest.VTC_Service-MOODLE-Namespace

@@ -18,5 +18,5 @@ output "VTC_Service-Moodle-External-Endpoint" {
 }
 
 output "VTC_Service-Moodle-Self-DNS-Endpoint" {
-  value = aws_route53_record.VTC_Service-Moodle.name
+  value = aws_route53_record.VTC_Service-Primary-Moodle.name
 }
