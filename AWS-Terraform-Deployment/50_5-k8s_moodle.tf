@@ -36,6 +36,9 @@ locals {
     Ingress = {
       Name = "moodle-ingress"
     }
+    HPA = {
+      Name = "php-moodle"
+    }
   }
 }
 
@@ -288,6 +291,43 @@ YAML
     kubectl_manifest.VTC_Service-MOODLE-Namespace
   ]
 }
+
+
+/*########################################################
+Kubenates Moodle Ingress
+
+port: 8080 -> 80
+
+########################################################*/
+resource "kubectl_manifest" "VTC_Service-Moodle-Deployment-HPAs" {
+  yaml_body = <<YAML
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ${local.Moodle-K8s.HPA.Name}
+  namespace: ${local.Moodle-K8s.Namespace}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ${local.Moodle-K8s.Deployment.Name}
+    namespace: ${local.Moodle-K8s.Namespace}
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 10
+YAML
+
+  depends_on = [
+    kubectl_manifest.VTC_Service-MOODLE-Deployment
+  ]
+}
+
 
 resource "time_sleep" "VTC_Service-MOODLE-Ingress_8080-Create_Duration" {
   // 30 second wait before getting ingress endpoint
