@@ -294,9 +294,7 @@ YAML
 
 
 /*########################################################
-Kubenates Moodle Ingress
-
-port: 8080 -> 80
+Kubenates Moodle HorizontalPodAutoscaler
 
 ########################################################*/
 resource "kubectl_manifest" "VTC_Service-Moodle-Deployment-HPAs" {
@@ -329,6 +327,13 @@ YAML
 }
 
 
+/*########################################################
+Additional Resources
+
+30 second wait
+External Endpoint
+
+########################################################*/
 resource "time_sleep" "VTC_Service-MOODLE-Ingress_8080-Create_Duration" {
   // 30 second wait before getting ingress endpoint
   depends_on = [kubectl_manifest.VTC_Service-MOODLE-Ingress_8080]
